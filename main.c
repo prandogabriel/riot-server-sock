@@ -36,7 +36,7 @@ void measure_latency(ipv6_addr_t *addr, uint16_t port) {
         msg_receive(&msg);
         if (msg.type == GNRC_NETAPI_MSG_TYPE_RCV) {
             end = xtimer_now();
-            printf("Latency to %s: %u ms\n", ipv6_addr_to_str(addr_str, addr, IPV6_ADDR_MAX_STR_LEN), xtimer_usec_from_ticks(xtimer_diff(end, start)) / 1000);
+            printf("Latency to %s: %u ms\n", ipv6_addr_to_str(addr_str, addr, IPV6_ADDR_MAX_STR_LEN), (unsigned int) xtimer_usec_from_ticks(xtimer_diff(end, start)) / 1000);
             break;
         }
     }
