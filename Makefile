@@ -1,6 +1,10 @@
 # name of your application
 APPLICATION = sock
 
+CFLAGS += -DADDR_IPV6=\"2001:660:3207:400::68\"
+CFLAGS += -DCONFIG_EMCUTE_DEFAULT_PORT=1885
+
+
 # If no BOARD is found in the environment, use this default:
 BOARD ?= native
 

@@ -4,8 +4,13 @@
 #include "net/sock/udp.h"
 #include "xtimer.h"
 
+#ifndef ADDR_IPV6
+#define ADDR_IPV6 "2001:db8::1"
+#endif
+
 #define BUF_SIZE    (128U)
 #define MSG_QUEUE   (8U)
+#define DEFAULT_PORT   (1885)
 
 static msg_t server_queue[MSG_QUEUE];
 static sock_udp_t sock;
@@ -48,11 +53,11 @@ int main(void) {
     }
 
     /* Measure latency to two different IP addresses */
-    ipv6_addr_t ip1, ip2;
-    ipv6_addr_from_str(&ip1, "2001:db8::1");
-    ipv6_addr_from_str(&ip2, "2001:db8::2");
-    measure_latency(&ip1, 12345);
-    measure_latency(&ip2, 12345);
+    ipv6_addr_t ip1; //, ip2;
+    ipv6_addr_from_str(&ip1, ADDR_IPV6);
+    //ipv6_addr_from_str(&ip2, "2001:db8::2");
+    measure_latency(&ip1, DEFAULT_PORT);
+    //measure_latency(&ip2, 12345);
 
     /* Close the server socket */
     sock_udp_close(&sock);
