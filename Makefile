@@ -19,6 +19,9 @@ USEMODULE += auto_init_gnrc_netif
 USEMODULE += gnrc_ipv6_default
 # Include MQTT-SN
 # Add also the shell, some shell commands
+# Add also the shell, some shell commands
+USEMODULE += shell
+USEMODULE += shell_cmds_default
 USEMODULE += ps
 # For testing we also include the ping command and some stats
 USEMODULE += gnrc_icmpv6_echo

@@ -1,4 +1,17 @@
+#include <stdio.h>
+#include <string.h>
+#include <stdlib.h>
+
+#include "shell.h"
 #include "msg.h"
+#include "net/emcute.h"
+#include "net/ipv6/addr.h"
+#include "thread.h"
+
+#include "net/gnrc/netif.h"
+#include "net/gnrc/ipv6/nib.h"
+#include "net/gnrc/rpl.h"
+#include "net/ipv6/addr.h"
 #include "net/af.h"
 #include "net/protnum.h"
 #include "net/sock/udp.h"
@@ -46,10 +59,12 @@ void measure_latency(ipv6_addr_t *addr, uint16_t port)
     }
 }
 
-int main(void)
+int cmd_measure_latency(int argc, char **argv)
 {
-    /* Set up the message queue for the server thread */
-    msg_init_queue(server_queue, MSG_QUEUE);
+    (void)argc;
+    (void)argv;
+
+    printf("create new server sock\n");
 
     /* Create the server socket */
     if (sock_udp_create(&sock, &local, NULL, 0) < 0)
@@ -65,18 +80,31 @@ int main(void)
     // measure_latency(&ip1, DEFAULT_PORT);
     // measure_latency(&ip2, 12345);
 
-    while (1)
-    {
-        printf("start new measure\n");
+    printf("start new measure\n");
 
-        measure_latency(&ip1, DEFAULT_PORT);
-
-        // it sleeps for five seconds
-        xtimer_usleep(5 * US_PER_SEC);
-    }
+    measure_latency(&ip1, DEFAULT_PORT);
 
     /* Close the server socket */
     sock_udp_close(&sock);
 
+    return 0;
+}
+
+static const shell_command_t shell_commands[] = {
+    {"measure_latency", "measure latency", cmd_measure_latency},
+    {NULL, NULL, NULL}};
+
+int main(void)
+{
+    puts("measure latency example\n");
+
+    /* Set up the message queue for the server thread */
+    msg_init_queue(server_queue, MSG_QUEUE);
+
+    /* start shell */
+    char line_buf[SHELL_DEFAULT_BUFSIZE];
+    shell_run(shell_commands, line_buf, SHELL_DEFAULT_BUFSIZE);
+
+    /* should be never reached */
     return 0;
 }
