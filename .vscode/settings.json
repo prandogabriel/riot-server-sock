@@ -7,6 +7,11 @@
     "*.proto": "3d",
     "*.webpack.js": "webpack",
     "*.list": "c",
-    "shell.h": "c"
+    "shell.h": "c",
+    "stdio.h": "c",
+    "netif.h": "c",
+    "icmpv6.h": "c",
+    "ipv6.h": "c",
+    "udp.h": "c"
   }
 }

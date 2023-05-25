@@ -4,78 +4,81 @@
 
 #include "shell.h"
 #include "msg.h"
+#include "net/emcute.h"
 #include "net/ipv6/addr.h"
 #include "thread.h"
-
-#include "net/gnrc/ipv6.h"
-#include "net/gnrc/icmpv6.h"
+#include <net/gnrc/ipv6.h>
+#include <net/gnrc/icmpv6.h>
+#include "net/gnrc/netif.h"
+#include "net/gnrc/ipv6/nib.h"
+#include "net/gnrc/rpl.h"
+#include "net/ipv6/addr.h"
+#include "net/af.h"
+#include "net/protnum.h"
+#include "net/sock/udp.h"
 #include "xtimer.h"
 
 #ifndef ADDR_IPV6
-#define ADDR_IPV6 "2001:db8::1"
+#define ADDR_IPV6 "fec0:affe::1"
 #endif
 
-#define ICMPV6_ECHO_ID 12345
-
+#define BUF_SIZE (128U)
 #define MSG_QUEUE (8U)
+
 static msg_t server_queue[MSG_QUEUE];
 
-void my_ping(ipv6_addr_t *addr)
+void measure_latency(ipv6_addr_t *addr)
 {
-    uint8_t payload[] = "RIOT";
-    xtimer_ticks32_t start, end;
-    int req;
+    char addr_str[IPV6_ADDR_MAX_STR_LEN]; // Adicionada a variável addr_str.
 
-    /* Send an ICMPv6 Echo Request and measure the time until we get a response */
-    start = xtimer_now();
     gnrc_netif_t *netif = gnrc_netif_iter(NULL);
+    xtimer_ticks32_t start, end;
+    uint16_t id = 0;
     uint16_t seq = 0;
     uint8_t ttl = 64;
-    req = gnrc_icmpv6_echo_send(netif, addr, ICMPV6_ECHO_ID, seq, ttl, sizeof(payload));
+    size_t len = BUF_SIZE;
 
-    if (req < 0)
-    {
-        printf("Error sending ICMPv6 Echo Request\n");
-        return;
+    start = xtimer_now();
+    int res = gnrc_icmpv6_echo_send(netif, addr, id, seq, ttl, len);
+    end = xtimer_now();
+
+    if (res == 0) {
+        printf("Latency to %s: %" PRIu32 " ms\n",
+               ipv6_addr_to_str(addr_str, addr, IPV6_ADDR_MAX_STR_LEN),
+               xtimer_usec_from_ticks(xtimer_diff(end, start)) / 1000);
+    } else {
+        printf("Failed to send ICMPv6 Echo Request to %s\n",
+               ipv6_addr_to_str(addr_str, addr, IPV6_ADDR_MAX_STR_LEN));
     }
-
-    printf("response %d\n", req);
-
-    /* Wait for the ICMPv6 Echo Reply */
-    /* Note: This is a placeholder - you will need to implement this part of the code to capture the reply */
-    //  while (1)
-    //{
-    /* Check for ICMPv6 Echo Reply here */
-    /* On receiving ICMPv6 Echo Reply */
-    /* end = xtimer_now(); */
-    /* break; */
-    //}
-
-    /* Compute and print latency */
-    printf("Latency: %u ms\n", (unsigned int)xtimer_usec_from_ticks(xtimer_diff(end, start)) / 1000);
 }
 
-int cmd_my_ping(int argc, char **argv)
+int cmd_measure_latency(int argc, char **argv)
 {
     (void)argc;
     (void)argv;
 
-    printf("start ping");
 
-    ipv6_addr_t ip;
-    ipv6_addr_from_str(&ip, ADDR_IPV6);
-    my_ping(&ip);
+    /* Measure latency to two different IP addresses */
+    ipv6_addr_t ip1; //, ip2;
+    ipv6_addr_from_str(&ip1, ADDR_IPV6);
+    // ipv6_addr_from_str(&ip2, "2001:db8::2");
+    // measure_latency(&ip1, DEFAULT_PORT);
+    // measure_latency(&ip2, 12345);
+
+    printf("start new measure\n");
+
+    measure_latency(&ip1);
 
     return 0;
 }
 
 static const shell_command_t shell_commands[] = {
-    {"my_ping", "my ping", cmd_my_ping},
+    {"measure_latency", "measure latency", cmd_measure_latency},
     {NULL, NULL, NULL}};
 
 int main(void)
 {
-    puts("my ping example\n");
+    puts("measure latency example\n");
 
     /* Set up the message queue for the server thread */
     msg_init_queue(server_queue, MSG_QUEUE);

@@ -1,7 +1,7 @@
 # name of your application
 APPLICATION = sock
 
-CFLAGS += -DADDR_IPV6=\"2001:660:3207:400::68\"
+CFLAGS += -DADDR_IPV6=\"fec0:affe::1\"
 CFLAGS += -DCONFIG_EMCUTE_DEFAULT_PORT=1885
 
 
