@@ -4,7 +4,6 @@
 
 #include "shell.h"
 #include "msg.h"
-#include "net/emcute.h"
 #include "net/ipv6/addr.h"
 #include "thread.h"
 #include <net/gnrc/ipv6.h>
@@ -15,9 +14,8 @@
 #include "net/ipv6/addr.h"
 #include "net/af.h"
 #include "net/protnum.h"
-#include "net/sock/udp.h"
 #include "xtimer.h"
-
+#include "ping.h"
 #ifndef ADDR_IPV6
 #define ADDR_IPV6 "fec0:affe::1"
 #endif
@@ -42,6 +40,7 @@ void measure_latency(ipv6_addr_t *addr)
     int res = gnrc_icmpv6_echo_send(netif, addr, id, seq, ttl, len);
     end = xtimer_now();
 
+
     if (res == 0) {
         printf("Latency to %s: %" PRIu32 " ms\n",
                ipv6_addr_to_str(addr_str, addr, IPV6_ADDR_MAX_STR_LEN),
@@ -61,13 +60,15 @@ int cmd_measure_latency(int argc, char **argv)
     /* Measure latency to two different IP addresses */
     ipv6_addr_t ip1; //, ip2;
     ipv6_addr_from_str(&ip1, ADDR_IPV6);
+
+    gnrc_icmpv6_ping(ip1);
     // ipv6_addr_from_str(&ip2, "2001:db8::2");
     // measure_latency(&ip1, DEFAULT_PORT);
     // measure_latency(&ip2, 12345);
 
     printf("start new measure\n");
 
-    measure_latency(&ip1);
+   // measure_latency(&ip1);
 
     return 0;
 }

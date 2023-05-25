@@ -12,6 +12,14 @@
     "netif.h": "c",
     "icmpv6.h": "c",
     "ipv6.h": "c",
-    "udp.h": "c"
+    "udp.h": "c",
+    "emcute.h": "c",
+    "addr.h": "c",
+    "protnum.h": "c",
+    "ping.h": "c",
+    "utlist.h": "c",
+    "ztimer.h": "c",
+    "limits.h": "c",
+    "gnrc.h": "c"
   }
 }
