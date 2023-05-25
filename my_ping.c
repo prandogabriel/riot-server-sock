@@ -6,7 +6,6 @@
 #include "net/gnrc/icmpv6.h"
 #include "net/icmpv6.h"
 #include "net/ipv6.h"
-#include "net/utils.h"
 #include "sched.h"
 #include "shell.h"
 #include "timex.h"
