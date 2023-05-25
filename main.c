@@ -15,7 +15,7 @@
 #include "net/af.h"
 #include "net/protnum.h"
 #include "xtimer.h"
-#include "ping.h"
+#include "my_ping.h"
 #ifndef ADDR_IPV6
 #define ADDR_IPV6 "fec0:affe::1"
 #endif
@@ -24,32 +24,6 @@
 #define MSG_QUEUE (8U)
 
 static msg_t server_queue[MSG_QUEUE];
-
-void measure_latency(ipv6_addr_t *addr)
-{
-    char addr_str[IPV6_ADDR_MAX_STR_LEN]; // Adicionada a variável addr_str.
-
-    gnrc_netif_t *netif = gnrc_netif_iter(NULL);
-    xtimer_ticks32_t start, end;
-    uint16_t id = 0;
-    uint16_t seq = 0;
-    uint8_t ttl = 64;
-    size_t len = BUF_SIZE;
-
-    start = xtimer_now();
-    int res = gnrc_icmpv6_echo_send(netif, addr, id, seq, ttl, len);
-    end = xtimer_now();
-
-
-    if (res == 0) {
-        printf("Latency to %s: %" PRIu32 " ms\n",
-               ipv6_addr_to_str(addr_str, addr, IPV6_ADDR_MAX_STR_LEN),
-               xtimer_usec_from_ticks(xtimer_diff(end, start)) / 1000);
-    } else {
-        printf("Failed to send ICMPv6 Echo Request to %s\n",
-               ipv6_addr_to_str(addr_str, addr, IPV6_ADDR_MAX_STR_LEN));
-    }
-}
 
 int cmd_measure_latency(int argc, char **argv)
 {
@@ -61,15 +35,8 @@ int cmd_measure_latency(int argc, char **argv)
     ipv6_addr_t ip1; //, ip2;
     ipv6_addr_from_str(&ip1, ADDR_IPV6);
 
-    gnrc_icmpv6_ping(ip1);
-    // ipv6_addr_from_str(&ip2, "2001:db8::2");
-    // measure_latency(&ip1, DEFAULT_PORT);
-    // measure_latency(&ip2, 12345);
-
-    printf("start new measure\n");
-
-   // measure_latency(&ip1);
-
+    printf("\nlatency %d \n", get_latency(ip1));
+   
     return 0;
 }
 

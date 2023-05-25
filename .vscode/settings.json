@@ -20,6 +20,9 @@
     "utlist.h": "c",
     "ztimer.h": "c",
     "limits.h": "c",
-    "gnrc.h": "c"
+    "gnrc.h": "c",
+    "byteorder.h": "c",
+    "bitfield.h": "c",
+    "msg.h": "c"
   }
 }
