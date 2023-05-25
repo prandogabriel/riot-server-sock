@@ -31,5 +31,5 @@ typedef struct {
 } _ping_data_t;
 
 int gnrc_icmpv6_ping(ipv6_addr_t ip);
-int get_latency(ipv6_addr_t ip);
+uint32_t get_latency(ipv6_addr_t ip);
 

@@ -35,7 +35,7 @@ int cmd_measure_latency(int argc, char **argv)
     ipv6_addr_t ip1; //, ip2;
     ipv6_addr_from_str(&ip1, ADDR_IPV6);
 
-    printf("\nlatency %d \n", get_latency(ip1));
+    printf("\nlatency %d \n", (int)get_latency(ip1));
    
     return 0;
 }
