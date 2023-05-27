@@ -35,7 +35,21 @@ USEMODULE += gnrc_sock_udp
 USEMODULE += xtimer
 USEMODULE += printf_float
 
+USEMODULE += gnrc_rpl
+USEMODULE += auto_init_gnrc_rpl
+# Additional networking modules that can be dropped if not needed
+USEMODULE += gnrc_icmpv6_echo
+USEMODULE += shell_cmd_gnrc_udp
+# Add also the shell, some shell commands
+USEMODULE += shell
+USEMODULE += shell_cmds_default
+USEMODULE += ps
+USEMODULE += netstats_l2
+USEMODULE += netstats_ipv6
+USEMODULE += netstats_rpl
 
+
+CFLAGS += -DCONFIG_GNRC_NETIF_IPV6_ADDRS_NUMOF=4
 # Allow for env-var-based override of the nodes name (EMCUTE_ID)
 ifneq (,$(EMCUTE_ID))
   CFLAGS += -DEMCUTE_ID=\"$(EMCUTE_ID)\"
